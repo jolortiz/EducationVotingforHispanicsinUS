@@ -1,5 +1,6 @@
 # The-State-of-Mexican-Americans-from-1980-to-2015
 A d3 visulaization of Mexican-Americans throughout time.
+See this info hosted here: https://jolortiz.github.io/The-State-of-Mexican-Americans-from-1980-to-2015/index.html
 
 Jonathan Ortiz  
 tani.l.ortiz@gmail.com  
