@@ -9,8 +9,6 @@ Instructor: Suresh Lodha
 CMPS 165: Data Programming for Visualization  
 Spring 2018  
 
-Title: The State of Mexican-Americans from 1980 to 2015
-
 This visulaization will show how the state of Latino Education has improved over the recent years and how this has affected Latino lifestyle in the US. The rates of Hispanics dropping out of high school has siginifcantly dropped, college enrollment is on the up, and student debt is lower for Hispanics. These are all factors indicating an improvment in Hispanic Education. My visulization will tell the story of why this is happening.
 
 Data Sources:
