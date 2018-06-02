@@ -5,6 +5,7 @@ https://jolortiz.github.io/EducationVotingforHispanicsinUS/
 
 Jonathan Ortiz  
 jolortiz@ucsc.edu 
+
 Instructor: Suresh Lodha  
 CMPS 165: Data Programming for Visualization  
 Spring 2018  
