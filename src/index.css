@@ -8,3 +8,22 @@
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+
+body {
+  font: 13px sans-serif;
+  max-width: 1080px;
+  margin: 0 auto 4em auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}

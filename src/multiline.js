@@ -2,11 +2,19 @@
 ** Jonathan Ortiz
 ** UCSC CMPS 165
 */
+// Create title
+d3.select("body").append("h1").text("LatinoEducation")
+
 
 // Width and height
 var w = 700;
 var h = 600;
 var padding = 20;
+
+// for Pie chart
+var height = 50;
+var width = 50;
+
 
 // Scale functions
 var xScale = d3.scaleLinear()
@@ -72,7 +80,9 @@ svg.append("text")
       .style("text-anchor", "middle")
       .text("Year");
 
-// Read in the population data
+
+
+// Read in the poppopulation data
 d3.csv("population.csv",function(error, data){
     // Put data in container
     var pop = data.columns.slice(1).map(function(id) {
@@ -84,8 +94,9 @@ d3.csv("population.csv",function(error, data){
             })
         };
     });
+
     console.log(pop);
-    
+
     // Create a g element for each population
     var group = svg.selectAll(".group")
         .data(pop)
@@ -103,7 +114,7 @@ d3.csv("population.csv",function(error, data){
     group.append("text")
         .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
         .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.value) + ")"; })
-        .attr("x", padding * 2)
+        .attr("x", padding * 3)
         .attr("dy", "0.35em")
         .style("font", "10px sans-serif")
         .text(function(d, i) { 
@@ -125,7 +136,28 @@ d3.csv("population.csv",function(error, data){
         .duration(2000)
         .ease(d3.easeLinear)
         .attr("stroke-dashoffset", 0);
+    
 });
+
+var radius = Math.min(width, height) / 2;
+
+var arc = d3.arc()
+    .outerRadius(radius)
+    .innerRadius(0);
+
+var label = d3.arc()
+    .outerRadius(radius - 40)
+    .innerRadius(radius - 40);
+
+var pie = d3.pie()
+    .value(function (d) {
+        return d.value;
+    })
+    .sort(null);
+
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+// var color = d3.scaleOrdinal()
+    // .range(['#A60F2B', '#648C85', '#B3F2C9', '#528C18', '#C3F25C']);
 
 // Read in the education data
 d3.csv("education.csv",function(error, data){
@@ -152,7 +184,8 @@ d3.csv("education.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#1D8335'; });
+        //.style("stroke", function(d) { return '#1D8335'; });
+        .style("stroke", function (d) { return color(d.id);});
     
     // Append group name to end of path
     edugroup.append("text")
@@ -182,4 +215,66 @@ d3.csv("education.csv",function(error, data){
         .duration(2000)
         .ease(d3.easeLinear)
         .attr("stroke-dashoffset", 0);
+    
+});
+
+
+
+d3.csv("education.csv", function (error, data_edu) 
+{
+    d3.csv("population.csv", function (error, data_pop)
+    {
+        var pieData = {};
+        var total = {};
+        //reorder data
+        for (var elem of data_pop) 
+            total[elem.date] = +elem.total;
+        for (elem of data_edu)
+        {
+            pieData[elem.date] = [
+                { label: "dropout", value: elem.dropout },
+                { label: "hs", value: elem.hs },
+                { label: "comm", value: elem.comm },
+                { label: "coll", value: elem.coll }];
+
+        }
+        // console.log(pieData);
+        // console.log(total);
+
+        for (var key in pieData)
+        {
+            //create piegroup
+            var piegroup = svg.selectAll(".piegroup" + key)
+                .data(pie(pieData[key]))
+                .enter()
+                .append("g")
+                .attr("class", "piegroup");
+            piegroup
+                .append('path')
+                .attr('d', arc)
+                .attr("transform", "translate(" + (xScale(key) + 35) + "," + (yScale(total[key]) - 0) + ")")
+                .attr('fill', function (d, i)
+                {
+                    return color(d.data.label);
+                });
+            // .text(function (d)
+            // {
+            //     return d.data.label;
+            // });
+
+            // piegroup.append("text")
+            //     .attr("transform", function (d)
+            //     {
+            //         console.log(label.centroid(d));
+            //         return "translate(" + (label.centroid(d)[0] + xScale(key) + 20) + ',' + (label.centroid(d)[1] + yScale(total[key]) - 20) + ")";
+            //     })
+            //     .attr("dy", "0.35em")
+            //     .text(function (d)
+            //     {
+            //         return d.data.label;
+            //     });
+        }
+    });
+    
+
 });
