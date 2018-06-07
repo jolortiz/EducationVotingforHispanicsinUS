@@ -17,6 +17,8 @@ var yScale = d3.scaleLinear()
     .domain([0, 60000000])
     .range([h - padding * 3, padding]);
 
+var z = d3.scaleOrdinal(d3.schemeCategory10);
+
 // Define X axis
 var xAxis = d3.axisBottom()
     .scale(xScale)
@@ -26,7 +28,7 @@ var xAxis = d3.axisBottom()
       } else {
           return null;
       }
-    });
+});
 
 // Define Y axis
 var yAxis = d3.axisLeft()
@@ -35,7 +37,7 @@ var yAxis = d3.axisLeft()
 
 // Line function
 var line = d3.line()
-    .curve(d3.curveBasis)
+    //.curve(d3.curveBasis)
     .x(function(d) { return xScale(d.date); })
     .y(function(d) { return yScale(d.value); });
 
@@ -97,7 +99,8 @@ d3.csv("population.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#EE2410'; });
+        .style("stroke", function(d) { return '#EE2410'; })
+        .style("fill", function(d) { return z(d.key); });;
     
     // Append group name to end of path
     group.append("text")
@@ -152,7 +155,8 @@ d3.csv("education.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#1D8335'; });
+        .style("stroke", function(d) { return '#1D8335'; })
+        .style("fill", function(d) { return z(d.key); });
     
     // Append group name to end of path
     edugroup.append("text")
