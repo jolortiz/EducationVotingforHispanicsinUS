@@ -141,7 +141,7 @@ d3.csv("population.csv",function(error, data){
 
 var rscale = d3.scaleLinear()
     .domain([13000000,57000000])
-    .range([30,75]);
+    .range([20,45]);
 
 var radius = function (d) {
     // console.log(total);
@@ -198,7 +198,7 @@ d3.csv("education.csv",function(error, data){
         .style("font", "10px sans-serif")
         .text(function(d, i) { 
             if(i == 0){
-                return "HS Dropout";
+                return "Less than 12 grade";
             }else if(i == 2) {
                 return "HS Graduate";
             }else if(i == 3) {
@@ -285,7 +285,7 @@ d3.csv("education.csv", function (error, data_edu)
                 .on('mouseover', function (d,i) {
                     var label;
                     if (i == 0) {
-                        label = "HS Dropout";
+                        label = "Less than 12 grade";
                     } else if (i == 2) {
                         label= "HS Graduate";
                     } else if (i == 3) {
