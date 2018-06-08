@@ -22,7 +22,7 @@ var xScale = d3.scaleLinear()
     .range([padding * 3, w - padding * 6]);
 
 var yScale = d3.scaleLinear()
-    .domain([0, 60000000])
+    .domain([0, 25000000])
     .range([h - padding * 3, padding]);
 
 // Define X axis
@@ -139,15 +139,12 @@ d3.csv("population.csv",function(error, data){
     
 });
 
-var radius = Math.min(width, height) / 2;
 
+var radius = function(d){return Math.min(total/400000)}  ;
+//var radius = Math.min(width,height)/2;
 var arc = d3.arc()
     .outerRadius(radius)
     .innerRadius(0);
-
-var label = d3.arc()
-    .outerRadius(radius - 40)
-    .innerRadius(radius - 40);
 
 var pie = d3.pie()
     .value(function (d) {
@@ -156,8 +153,6 @@ var pie = d3.pie()
     .sort(null);
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
-// var color = d3.scaleOrdinal()
-    // .range(['#A60F2B', '#648C85', '#B3F2C9', '#528C18', '#C3F25C']);
 
 // Read in the education data
 d3.csv("education.csv",function(error, data){
@@ -218,32 +213,33 @@ d3.csv("education.csv",function(error, data){
     
 });
 
-
-
+var tooltip = d3.select("body").append("div")
+    .attr("class", "toolTip");
 d3.csv("education.csv", function (error, data_edu) 
 {
     d3.csv("population.csv", function (error, data_pop)
     {
         var pieData = {};
-        var total = {};
+        var totalData= {};
         //reorder data
         for (var elem of data_pop) 
-            total[elem.date] = +elem.total;
+            totalData[elem.date] = +elem.total;
         for (elem of data_edu)
         {
             pieData[elem.date] = [
-                { label: "dropout", value: elem.dropout },
-                { label: "hs", value: elem.hs },
-                { label: "comm", value: elem.comm },
-                { label: "coll", value: elem.coll }];
-
+                { label: "dropout", value: +elem.dropout },
+                { label: "hs", value: +elem.hs },
+                { label: "comm", value: +elem.comm },
+                { label: "coll", value: +elem.coll }];
         }
-        // console.log(pieData);
-        // console.log(total);
 
         for (var key in pieData)
         {
             //create piegroup
+            total = d3.sum(pieData[key],function(d){
+                return d.value;
+            })
+
             var piegroup = svg.selectAll(".piegroup" + key)
                 .data(pie(pieData[key]))
                 .enter()
@@ -252,29 +248,36 @@ d3.csv("education.csv", function (error, data_edu)
             piegroup
                 .append('path')
                 .attr('d', arc)
-                .attr("transform", "translate(" + (xScale(key) + 35) + "," + (yScale(total[key]) - 0) + ")")
+                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + (yScale(total) - 10) + ")")
                 .attr('fill', function (d, i)
                 {
+                    console.log(color(d.data.label));
                     return color(d.data.label);
+                })
+                .attr('fill-opacity',0.75)
+                .on('mouseover', function (d,i) {
+                    var label;
+                        if (i == 0) {
+                            label = "HS Dropout";
+                        } else if (i == 2) {
+                            label= "HS Graduate";
+                        } else if (i == 3) {
+                            label= "2 year College";
+                        } else {
+                            label= "4 year College";
+                        }
+                        tooltip
+                        .style("left", d3.event.pageX + 10 + "px")
+                        .style("top", d3.event.pageY + "px")
+                        .style("display", "inline-block")
+                        .html(
+                            
+                            label +": "+ Math.round((d.data.value/total) * 100,1) + "%"
+                        );
+                    })
+                .on('mouseout', function (d) {
+                    tooltip.style("display", "none");
                 });
-            // .text(function (d)
-            // {
-            //     return d.data.label;
-            // });
-
-            // piegroup.append("text")
-            //     .attr("transform", function (d)
-            //     {
-            //         console.log(label.centroid(d));
-            //         return "translate(" + (label.centroid(d)[0] + xScale(key) + 20) + ',' + (label.centroid(d)[1] + yScale(total[key]) - 20) + ")";
-            //     })
-            //     .attr("dy", "0.35em")
-            //     .text(function (d)
-            //     {
-            //         return d.data.label;
-            //     });
         }
     });
-    
-
 });
