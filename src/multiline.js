@@ -22,7 +22,7 @@ var xScale = d3.scaleLinear()
     .range([padding * 3, w - padding * 6]);
 
 var yScale = d3.scaleLinear()
-    .domain([0, 25000000])
+    .domain([0, 80000000])
     .range([h - padding * 3, padding]);
 
 // Define X axis
@@ -139,8 +139,14 @@ d3.csv("population.csv",function(error, data){
     
 });
 
+var rscale = d3.scaleLinear()
+    .domain([13000000,57000000])
+    .range([30,75]);
 
-var radius = function(d){return Math.min(total/400000)}  ;
+var radius = function (d) {
+    // console.log(total);
+    return rscale(total);
+};
 //var radius = Math.min(width,height)/2;
 var arc = d3.arc()
     .outerRadius(radius)
@@ -151,6 +157,7 @@ var pie = d3.pie()
         return d.value;
     })
     .sort(null);
+
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -239,7 +246,6 @@ d3.csv("education.csv", function (error, data_edu)
             total = d3.sum(pieData[key],function(d){
                 return d.value;
             })
-
             var piegroup = svg.selectAll(".piegroup" + key)
                 .data(pie(pieData[key]))
                 .enter()
@@ -248,10 +254,9 @@ d3.csv("education.csv", function (error, data_edu)
             piegroup
                 .append('path')
                 .attr('d', arc)
-                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + (yScale(total) - 10) + ")")
+                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + (yScale(totalData[key]) - 80) + ")")
                 .attr('fill', function (d, i)
                 {
-                    console.log(color(d.data.label));
                     return color(d.data.label);
                 })
                 .attr('fill-opacity',0.75)
@@ -271,7 +276,6 @@ d3.csv("education.csv", function (error, data_edu)
                         .style("top", d3.event.pageY + "px")
                         .style("display", "inline-block")
                         .html(
-                            
                             label +": "+ Math.round((d.data.value/total) * 100,1) + "%"
                         );
                     })
