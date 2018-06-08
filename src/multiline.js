@@ -108,7 +108,7 @@ d3.csv("population.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#EE2410'; });
+        .style("stroke", function(d) { return '#E1E5E2'; });
     
     // Append group name to end of path
     group.append("text")
@@ -139,15 +139,18 @@ d3.csv("population.csv",function(error, data){
     
 });
 
-var radius = Math.min(width, height) / 2;
+var rscale = d3.scaleLinear()
+    .domain([13000000,57000000])
+    .range([30,75]);
 
+var radius = function (d) {
+    // console.log(total);
+    return rscale(total);
+};
+//var radius = Math.min(width,height)/2;
 var arc = d3.arc()
     .outerRadius(radius)
     .innerRadius(0);
-
-var label = d3.arc()
-    .outerRadius(radius - 40)
-    .innerRadius(radius - 40);
 
 var pie = d3.pie()
     .value(function (d) {
@@ -155,9 +158,8 @@ var pie = d3.pie()
     })
     .sort(null);
 
+
 var color = d3.scaleOrdinal(d3.schemeCategory10);
-// var color = d3.scaleOrdinal()
-    // .range(['#A60F2B', '#648C85', '#B3F2C9', '#528C18', '#C3F25C']);
 
 // Read in the education data
 d3.csv("education.csv",function(error, data){
@@ -217,33 +219,55 @@ d3.csv("education.csv",function(error, data){
         .attr("stroke-dashoffset", 0);
     
 });
+var margin = { top: height-padding*2.5, right: 80, bottom: 30, left: width+padding*2.5 },
+x = d3.scaleTime().range([padding * 3, w - padding * 10]),
+y = d3.scaleLinear().range([h - padding * 3, padding-padding*2]);
+// add the X gridlines
+// svg.append("g")
+//     .attr("class", "grid")
+//     .attr("transform", "translate(" + margin.left + "," + (h - margin.top-60) + ")")
+//     .call(d3.axisBottom(x)
+//         .ticks(10)
+//         .tickSize(-h)
+//         .tickFormat("")
+//     )
 
+// // add the Y gridlines
+// svg.append("g")
+//     .attr("class", "grid")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top+ ")")
+//     .call(d3.axisLeft(y)
+//         .ticks(10)
+//         .tickSize(-w+padding)
+//         .tickFormat("")
+//     )
 
-
+var tooltip = d3.select("body").append("div")
+    .attr("class", "toolTip");
 d3.csv("education.csv", function (error, data_edu) 
 {
     d3.csv("population.csv", function (error, data_pop)
     {
         var pieData = {};
-        var total = {};
+        var totalData= {};
         //reorder data
         for (var elem of data_pop) 
-            total[elem.date] = +elem.total;
+            totalData[elem.date] = +elem.total;
         for (elem of data_edu)
         {
             pieData[elem.date] = [
-                { label: "dropout", value: elem.dropout },
-                { label: "hs", value: elem.hs },
-                { label: "comm", value: elem.comm },
-                { label: "coll", value: elem.coll }];
-
+                { label: "dropout", value: +elem.dropout },
+                { label: "hs", value: +elem.hs },
+                { label: "comm", value: +elem.comm },
+                { label: "coll", value: +elem.coll }];
         }
-        // console.log(pieData);
-        // console.log(total);
 
         for (var key in pieData)
         {
             //create piegroup
+            total = d3.sum(pieData[key],function(d){
+                return d.value;
+            })
             var piegroup = svg.selectAll(".piegroup" + key)
                 .data(pie(pieData[key]))
                 .enter()
@@ -252,29 +276,34 @@ d3.csv("education.csv", function (error, data_edu)
             piegroup
                 .append('path')
                 .attr('d', arc)
-                .attr("transform", "translate(" + (xScale(key) + 35) + "," + (yScale(total[key]) - 0) + ")")
+                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + yScale(totalData[key]) + ")")
                 .attr('fill', function (d, i)
                 {
                     return color(d.data.label);
+                })
+                .attr('fill-opacity',0.75)
+                .on('mouseover', function (d,i) {
+                    var label;
+                    if (i == 0) {
+                        label = "HS Dropout";
+                    } else if (i == 2) {
+                        label= "HS Graduate";
+                    } else if (i == 3) {
+                        label= "2 year College";
+                    } else {
+                        label= "4 year College";
+                    }
+                    tooltip
+                    .style("left", d3.event.pageX + 10 + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("display", "inline-block")
+                    .html(
+                        label +": "+Math.round((d.data.value / total )*100) + "%"
+                    );
+                })
+                .on('mouseout', function (d) {
+                    tooltip.style("display", "none");
                 });
-            // .text(function (d)
-            // {
-            //     return d.data.label;
-            // });
-
-            // piegroup.append("text")
-            //     .attr("transform", function (d)
-            //     {
-            //         console.log(label.centroid(d));
-            //         return "translate(" + (label.centroid(d)[0] + xScale(key) + 20) + ',' + (label.centroid(d)[1] + yScale(total[key]) - 20) + ")";
-            //     })
-            //     .attr("dy", "0.35em")
-            //     .text(function (d)
-            //     {
-            //         return d.data.label;
-            //     });
         }
     });
-    
-
 });
