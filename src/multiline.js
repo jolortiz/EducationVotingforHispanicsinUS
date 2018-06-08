@@ -22,7 +22,7 @@ var xScale = d3.scaleLinear()
     .range([padding * 3, w - padding * 6]);
 
 var yScale = d3.scaleLinear()
-    .domain([0, 80000000])
+    .domain([0, 60000000])
     .range([h - padding * 3, padding]);
 
 // Define X axis
@@ -108,7 +108,7 @@ d3.csv("population.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#EE2410'; });
+        .style("stroke", function(d) { return '#E1E5E2'; });
     
     // Append group name to end of path
     group.append("text")
@@ -219,6 +219,28 @@ d3.csv("education.csv",function(error, data){
         .attr("stroke-dashoffset", 0);
     
 });
+var margin = { top: height-padding*2.5, right: 80, bottom: 30, left: width+padding*2.5 },
+x = d3.scaleTime().range([padding * 3, w - padding * 10]),
+y = d3.scaleLinear().range([h - padding * 3, padding-padding*2]);
+// add the X gridlines
+// svg.append("g")
+//     .attr("class", "grid")
+//     .attr("transform", "translate(" + margin.left + "," + (h - margin.top-60) + ")")
+//     .call(d3.axisBottom(x)
+//         .ticks(10)
+//         .tickSize(-h)
+//         .tickFormat("")
+//     )
+
+// // add the Y gridlines
+// svg.append("g")
+//     .attr("class", "grid")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top+ ")")
+//     .call(d3.axisLeft(y)
+//         .ticks(10)
+//         .tickSize(-w+padding)
+//         .tickFormat("")
+//     )
 
 var tooltip = d3.select("body").append("div")
     .attr("class", "toolTip");
@@ -254,7 +276,7 @@ d3.csv("education.csv", function (error, data_edu)
             piegroup
                 .append('path')
                 .attr('d', arc)
-                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + (yScale(totalData[key]) - 80) + ")")
+                .attr("transform", "translate(" + (xScale(key)+padding*2) + "," + yScale(totalData[key]) + ")")
                 .attr('fill', function (d, i)
                 {
                     return color(d.data.label);
@@ -262,23 +284,23 @@ d3.csv("education.csv", function (error, data_edu)
                 .attr('fill-opacity',0.75)
                 .on('mouseover', function (d,i) {
                     var label;
-                        if (i == 0) {
-                            label = "HS Dropout";
-                        } else if (i == 2) {
-                            label= "HS Graduate";
-                        } else if (i == 3) {
-                            label= "2 year College";
-                        } else {
-                            label= "4 year College";
-                        }
-                        tooltip
-                        .style("left", d3.event.pageX + 10 + "px")
-                        .style("top", d3.event.pageY + "px")
-                        .style("display", "inline-block")
-                        .html(
-                            label +": "+ Math.round((d.data.value/total) * 100,1) + "%"
-                        );
-                    })
+                    if (i == 0) {
+                        label = "HS Dropout";
+                    } else if (i == 2) {
+                        label= "HS Graduate";
+                    } else if (i == 3) {
+                        label= "2 year College";
+                    } else {
+                        label= "4 year College";
+                    }
+                    tooltip
+                    .style("left", d3.event.pageX + 10 + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("display", "inline-block")
+                    .html(
+                        label +": "+Math.round((d.data.value / total )*100) + "%"
+                    );
+                })
                 .on('mouseout', function (d) {
                     tooltip.style("display", "none");
                 });
