@@ -4,8 +4,9 @@
 */
 
 // Runs this d3 code if button is checked
-var radiobutt = document.getElementById('closer_look');
-radiobutt.onclick = function(){
+//var radiobutt = document.getElementById('closer_look');
+//radiobutt.onclick = function(){
+function closer_look() {
     $( ".middlecol" ).empty();
     
 /*** D3 CODE ***/
