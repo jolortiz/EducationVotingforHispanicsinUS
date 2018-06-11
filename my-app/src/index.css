@@ -1,12 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
 /* Education and Voting Power of Hispanics in the US
 ** Jonathan Ortiz
 ** UCSC CMPS 165
 */
-
-body {
-   margin: 0;
-   padding: 0;
-}
 
 .line {
   fill: none;
@@ -14,14 +15,6 @@ body {
   stroke-width: 1.5px;
 }
 
-.container {
-    padding: 0;
-}
-
-.middlecol {
-    
-}
-
-.rightcol {
+.d3container {
     text-align: center;
 }

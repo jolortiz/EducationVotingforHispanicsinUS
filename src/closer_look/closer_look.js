@@ -3,6 +3,13 @@
 ** UCSC CMPS 165
 */
 
+// Runs this d3 code if button is checked
+var radiobutt = document.getElementById('closer_look');
+radiobutt.onclick = function(){
+    $( ".middlecol" ).empty();
+    
+/*** D3 CODE ***/
+
 // Width and height
 var w = 700;
 var h = 700;
@@ -47,7 +54,7 @@ var line = d3.line()
     .y(function(d) { return yScale(d.value); });
 
 // Create SVG element
-var svg = d3.select("body")
+var svg = d3.select(".middlecol")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
@@ -74,13 +81,13 @@ svg.append("g")
 
 svg.append("text")
       .attr("y", h - padding)
-      .attr("x", (w/2) + padding)
+      .attr("x", w/2)
       .attr("dx", "1em")
       .style("text-anchor", "middle")
       .text("Year");
 
 // Read in the education data
-d3.csv("education.csv",function(error, data){
+d3.csv("closer_look/education.csv",function(error, data){
     // Put data in container
     var edu = data.columns.slice(1).map(function(id) {
         return {
@@ -152,6 +159,8 @@ d3.csv("education.csv",function(error, data){
         });
 
 });
+    
+}
 
 /*// Read in the population data
 d3.csv("population.csv",function(error, data){

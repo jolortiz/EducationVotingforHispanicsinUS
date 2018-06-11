@@ -3,25 +3,12 @@
 ** UCSC CMPS 165
 */
 
-body {
-   margin: 0;
-   padding: 0;
-}
-
 .line {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
 }
 
-.container {
-    padding: 0;
-}
-
-.middlecol {
-    
-}
-
-.rightcol {
+.d3container {
     text-align: center;
 }
