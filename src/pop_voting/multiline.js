@@ -253,10 +253,10 @@ d3.csv("pop_voting/education.csv", function (error, data_edu)
         for (elem of data_edu)
         {
             pieData[elem.date] = [
-                { label: "dropout", value: +elem.dropout },
-                { label: "hs", value: +elem.hs },
-                { label: "comm", value: +elem.comm },
-                { label: "coll", value: +elem.coll }];
+                { label: "dropout", value: +elem.dropout, total: totalData[elem.date]},
+                { label: "hs", value: +elem.hs, total: totalData[elem.date]},
+                { label: "comm", value: +elem.comm, total: totalData[elem.date]},
+                { label: "coll", value: +elem.coll, total: totalData[elem.date]}];
         }
 
         for (var key in pieData)
@@ -295,7 +295,7 @@ d3.csv("pop_voting/education.csv", function (error, data_edu)
                     .style("top", d3.event.pageY + "px")
                     .style("display", "inline-block")
                     .html(
-                        label +": "+Math.round((d.data.value / total )*100) + "%"
+                        label + ": " + Math.round((d.data.value / d.data.total)*100)+ "%"
                     );
                 })
                 .on('mouseout', function (d) {
@@ -309,146 +309,146 @@ function render(currdataset){
     if (currdataset == "education.csv"){ //default is education.
         location.reload(); //reload page.
     }
-    else{
+    else
+    {
         
-// Width and height
-var w = 700;
-var h = 700;
-var padding = 20;
+        // Width and height
+        var w = 700;
+        var h = 700;
+        var padding = 20;
 
-// for Pie chart
-var height = 50;
-var width = 50;
-
-
-// Scale functions
-var xScale = d3.scaleLinear()
-    .domain([1988, 2012])
-    .range([padding * 3, w - padding * 6]);
-
-var yScale = d3.scaleLinear()
-    .domain([0, 25000000])
-    .range([h - padding * 3, padding]);
-
-// Define X axis
-var xAxis = d3.axisBottom()
-    .scale(xScale)
-    .tickFormat(function(d, i) {
-      if(i==0 || i==2 || i==4 || i==6 || i==8 || i==10 || i==12){
-          return d;
-      } else {
-          return null;
-      }
-    });
-
-// Define Y axis
-var yAxis = d3.axisLeft()
-    .scale(yScale)
-    .ticks(5);
-
-// Line function
-var line = d3.line()
-    .curve(d3.curveBasis)
-    .x(function(d) { return xScale(d.date); })
-    .y(function(d) { return yScale(d.value); });
-
-svg.remove();
-// Create SVG element
-svg = d3.select(".middlecol")
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h);
-
-// Create X axis
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(" + (padding * 2) + "," + (h - (padding * 3)) + ")")
-    .call(xAxis);
-
-svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 5)
-      .attr("x", 0 - (h/2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("Number of People");
-
-// Create Y axis
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(" + (padding * 5) + ",0)")
-    .call(yAxis);
-
-svg.append("text")
-      .attr("y", h - padding)
-      .attr("x", (w/2) + padding)
-      .attr("dx", "1em")
-      .style("text-anchor", "middle")
-      .text("Year");
+        // for Pie chart
+        var height = 50;
+        var width = 50;
 
 
+        // Scale functions
+        var xScale = d3.scaleLinear()
+            .domain([1988, 2012])
+            .range([padding * 3, w - padding * 6]);
 
-// Read in the poppopulation data
-d3.csv("pop_voting/voting.csv",function(error, data){
-    // Put data in container
-    var pop = data.columns.slice(1).map(function(id) {
-        return {
-            id: id,
-            values: data.map(function(d) {
-                return {date: parseFloat(d.date),
-                        value: parseFloat(d[id])};
-            })
-        };
-    });
+        var yScale = d3.scaleLinear()
+            .domain([0, 25000000])
+            .range([h - padding * 3, padding]);
 
-    console.log(pop);
-
-    // Create a g element for each population
-    var group = svg.selectAll(".group")
-        .data(pop)
-        .enter().append("g")
-        .attr("class", "group");
-    
-    // Create path
-    var path = group.append("path")
-        .attr("class", "line")
-        .attr("transform", "translate(" + (padding * 2) + ",0)")
-        .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { 
-            if (d.id == 'total'){
-                return '#E1E5E2';
-            }else {
-            return color(d.id); 
+        // Define X axis
+        var xAxis = d3.axisBottom()
+            .scale(xScale)
+            .tickFormat(function(d, i) {
+            if(i==0 || i==2 || i==4 || i==6 || i==8 || i==10 || i==12){
+                return d;
+            } else {
+                return null;
             }
-        });
-    
-    // Append group name to end of path
-    group.append("text")
-        .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-        .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.value) + ")"; })
-        .attr("x", padding * 3)
-        .attr("dy", "0.35em")
-        .style("font", "10px sans-serif")
-        .text(function(d, i) { 
-            if(i == 0){
-                return "Voting";
-            }else if (i == 1) {
-                return "Non-voting";
-            }//else {
-            //    return "Eligible Voters"
-            //}
-        });
-    
-    // Animation
-    var totalLength = path.node().getTotalLength();
-    path
-        .attr("stroke-dasharray", totalLength + " " + totalLength)
-        .attr("stroke-dashoffset", totalLength)
-        .transition()
-        .duration(2000)
-        .ease(d3.easeLinear)
-        .attr("stroke-dashoffset", 0);
-    
+            });
+
+        // Define Y axis
+        var yAxis = d3.axisLeft()
+            .scale(yScale)
+            .ticks(5);
+
+        // Line function
+        var line = d3.line()
+            .curve(d3.curveBasis)
+            .x(function(d) { return xScale(d.date); })
+            .y(function(d) { return yScale(d.value); });
+
+        svg.remove();
+        // Create SVG element
+        svg = d3.select(".middlecol")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        // Create X axis
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + (padding * 2) + "," + (h - (padding * 3)) + ")")
+            .call(xAxis);
+
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 5)
+            .attr("x", 0 - (h/2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Number of People");
+
+        // Create Y axis
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + (padding * 5) + ",0)")
+            .call(yAxis);
+
+        svg.append("text")
+            .attr("y", h - padding)
+            .attr("x", (w/2) + padding)
+            .attr("dx", "1em")
+            .style("text-anchor", "middle")
+            .text("Year");
+
+
+
+        // Read in the poppopulation data
+        d3.csv("pop_voting/voting.csv",function(error, data){
+            // Put data in container
+            var pop = data.columns.slice(1).map(function(id) {
+                return {
+                    id: id,
+                    values: data.map(function(d) {
+                        return {date: parseFloat(d.date),
+                                value: parseFloat(d[id])};
+                    })
+                };
+            });
+
+            console.log(pop);
+
+            // Create a g element for each population
+            var group = svg.selectAll(".group")
+                .data(pop)
+                .enter().append("g")
+                .attr("class", "group");
+            
+            // Create path
+            var path = group.append("path")
+                .attr("class", "line")
+                .attr("transform", "translate(" + (padding * 2) + ",0)")
+                .attr("d", function (d) { console.log(d); return line(d.values); })
+                .style("stroke", function(d) { 
+                    if (d.id == 'total'){
+                        return '#E1E5E2';
+                    }else {
+                    return color(d.id); 
+                    }
+                });
+            
+            // Append group name to end of path
+            group.append("text")
+                .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+                .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.value) + ")"; })
+                .attr("x", padding * 3)
+                .attr("dy", "0.35em")
+                .style("font", "10px sans-serif")
+                .text(function(d, i) { 
+                    if(i == 0){
+                        return "Voting";
+                    }else if (i == 1) {
+                        return "Non-voting";
+                    }//else {
+                    //    return "Eligible Voters"
+                    //}
+                });
+            
+            // Animation
+            var totalLength = path.node().getTotalLength();
+            path
+                .attr("stroke-dasharray", (totalLength+100) + " " + (totalLength+100))
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0);
 });
 
 var rscale = d3.scaleLinear()
@@ -512,8 +512,8 @@ d3.csv("pop_voting/voting.csv", function (error, data_vote)
         for (elem of data_vote)
         {
             pieData[elem.date] = [
-                { label: "voting", value: +elem.voting },
-                { label: "nonvoting", value: +elem.nonvoting }];
+                { label: "voting", value: +elem.voting, total: totalData[elem.date] },
+                { label: "nonvoting", value: +elem.nonvoting, total: totalData[elem.date]}];
         }
 
         for (var key in pieData)
@@ -551,7 +551,7 @@ d3.csv("pop_voting/voting.csv", function (error, data_vote)
                     .style("top", d3.event.pageY + "px")
                     .style("display", "inline-block")
                     .html(
-                        label +": "+Math.round((d.data.value / total )*100) + "%"
+                        label +": "+Math.round((d.data.value / d.data.total )*100) + "%"
                     );
                 })
                 .on('mouseout', function (d) {
