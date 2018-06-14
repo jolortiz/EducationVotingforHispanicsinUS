@@ -3,10 +3,14 @@
 ** UCSC CMPS 165
 */
 
+html {
+    
+}
+
 body {
-  font: 13px sans-serif;
-  max-width: 1080px;
-  margin: 0 auto 4em auto;
+    font: 13px sans-serif;
+    max-width: 1080px;
+    margin: 0 auto 4em auto;
 }
 
 .title {
