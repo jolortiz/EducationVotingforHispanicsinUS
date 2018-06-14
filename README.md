@@ -1,6 +1,6 @@
 # Education and Voting Power of Hispanics in US
 A d3 visulaization of Hispanics throughout time.
-See this info hosted here:  
+See it hosted here:  
 https://jolortiz.github.io/EducationVotingforHispanicsinUS/  
 
 Jonathan Ortiz  
