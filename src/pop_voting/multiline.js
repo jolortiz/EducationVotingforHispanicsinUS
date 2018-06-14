@@ -116,7 +116,7 @@ d3.csv("pop_voting/population.csv",function(error, data){
         .style("font", "10px sans-serif")
         .text(function(d, i) { 
             if(i == 0){
-                return "Total Population";
+                return; // "Total Population";
             }else if(i == 2) {
                 return "US Born";
             }else {
@@ -195,13 +195,13 @@ d3.csv("pop_voting/education.csv",function(error, data){
         .style("font", "10px sans-serif")
         .text(function(d, i) { 
             if(i == 0){
-                return "Less than 12 grade";
+                return "Less than 12th";
             }else if(i == 2) {
-                return "HS Graduate";
+                return "2 Year College";
             }else if(i == 3) {
-                return "2 year College";
+                return "4 Year College";
             }else {
-                return "4 year College";
+                return "High School";
             }
         });
     
@@ -282,13 +282,13 @@ d3.csv("pop_voting/education.csv", function (error, data_edu)
                 .on('mouseover', function (d,i) {
                     var label;
                     if (i == 0) {
-                        label = "Less than 12 grade";
+                        label = "Less than 12th Grade";
                     } else if (i == 2) {
-                        label= "HS Graduate";
+                        label= "2 Year College Graduates";
                     } else if (i == 3) {
-                        label= "2 year College";
+                        label= "4 Year College Graduates";
                     } else {
-                        label= "4 year College";
+                        label= "High School Graduates";
                     }
                     tooltip
                     .style("left", d3.event.pageX + 10 + "px")
@@ -334,7 +334,7 @@ var yScale = d3.scaleLinear()
 var xAxis = d3.axisBottom()
     .scale(xScale)
     .tickFormat(function(d, i) {
-      if(i==0 || i==2 || i==4 || i==6 || i==7){
+      if(i==0 || i==2 || i==4 || i==6 || i==8 || i==10 || i==12){
           return d;
       } else {
           return null;
@@ -414,7 +414,13 @@ d3.csv("pop_voting/voting.csv",function(error, data){
         .attr("class", "line")
         .attr("transform", "translate(" + (padding * 2) + ",0)")
         .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return color(d.id); });
+        .style("stroke", function(d) { 
+            if (d.id == 'total'){
+                return '#E1E5E2';
+            }else {
+            return color(d.id); 
+            }
+        });
     
     // Append group name to end of path
     group.append("text")
@@ -426,9 +432,11 @@ d3.csv("pop_voting/voting.csv",function(error, data){
         .text(function(d, i) { 
             if(i == 0){
                 return "Voting";
-            }else{
-                return "Non Voting";
-            }
+            }else if (i == 1) {
+                return "Non-voting";
+            }//else {
+            //    return "Eligible Voters"
+            //}
         });
     
     // Animation
@@ -499,7 +507,8 @@ d3.csv("pop_voting/voting.csv", function (error, data_vote)
         var totalData= {};
         //reorder data
         for (var elem of data_vote) 
-            totalData[elem.date] = (+elem.voting + +elem.nonvoting);
+            //totalData[elem.date] = (+elem.voting + +elem.nonvoting);
+             totalData[elem.date] = +elem.total;
         for (elem of data_vote)
         {
             pieData[elem.date] = [
@@ -531,10 +540,12 @@ d3.csv("pop_voting/voting.csv", function (error, data_vote)
                 .on('mouseover', function (d,i) {
                     var label;
                     if (i == 0) {
-                        label = "voting";
-                    } else{
-                        label= "nonvoting";
-                    }
+                        label = "Voting";
+                    } else if (i == 1) {
+                        label = "Non-voting";
+                    }// else{
+                    //    label = "Eligible Voters";
+                    //}
                     tooltip
                     .style("left", d3.event.pageX + 10 + "px")
                     .style("top", d3.event.pageY + "px")
