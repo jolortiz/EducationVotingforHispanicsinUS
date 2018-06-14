@@ -14,15 +14,19 @@
         <link rel="stylesheet" type="text/css" href="index.css">
     </head>
     <body>
+        <!-- Title -->
+        <h1 class="title font">Education and Voting Power of Hispanics</h1>
         <!-- Container for columns -->
-        <div class="container">
+        <div class="container" style="margin: 0;">
             <div class="row">
-                <div class="col-sm leftcol"></div>
+                <div class="col-sm leftcol">
+                    <p class="font">This data visualization is based off an article written for Pew Research Center by Jen Manuel Krogstad about Lations and education(<a href="http://www.pewresearch.org/fact-tank/2016/07/28/5-facts-about-latinos-and-education/" class="font">Link</a>). The data for this visulization was taken from Pew Research Center by Antonio Flores, Gustavo Lopez, and Jynnah Radford.(<a href="http://www.pewhispanic.org/2017/09/18/facts-on-u-s-latinos-trend-data/" class="font">Link</a>). This visulaization shows how important education is to the Latino community and how over recent years it has improved. For example, the high school dropout rate has siginifcantly dropped, college enrollment is on the up, and much more.</p>
+                </div>
                 <div class="col-sm middlecol"></div>
                 <div class="col-sm rightcol">
-                    <button type="button" id="bt1" class="btn btn-primary" onclick="edudata()">Education</button>
-                    <button type="button" id="bt2" class="btn btn-primary" onclick="closer_look()">Closer Look</button>
-                    <button type="button" id="bt3" class="btn btn-primary" onclick="votingdata()">Voting</button>
+                    <button type="button" id="bt1" class="btn btn-default" onclick="edudata()">Education</button>
+                    <button type="button" id="bt2" class="btn btn-default" onclick="closer_look()">Closer Look</button>
+                    <button type="button" id="bt3" class="btn btn-default" onclick="votingdata()">Voting</button>
                 </div>
             </div>
         </div>

@@ -8,6 +8,8 @@
 //radiobutt.onclick = function(){
 function closer_look() {
     $( ".middlecol" ).empty();
+    var votingbutt = document.getElementById('bt3');
+    votingbutt.style.display = "none";
     
 /*** D3 CODE ***/
 

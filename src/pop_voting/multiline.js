@@ -554,6 +554,9 @@ d3.csv("pop_voting/voting.csv", function (error, data_vote)
 }
 
 function edudata(){
+    var votingbutt = document.getElementById('bt3');
+    votingbutt.style.display = "block";
+    
     currdataset = "education.csv";
     render("education.csv");
 }
