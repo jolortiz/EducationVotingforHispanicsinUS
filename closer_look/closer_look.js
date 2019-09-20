@@ -4,8 +4,6 @@
 */
 
 // Runs this d3 code if button is checked
-//var radiobutt = document.getElementById('closer_look');
-//radiobutt.onclick = function(){
 function closer_look() {
     $( ".middlecol" ).empty();
     var votingbutt = document.getElementById('bt3');
@@ -153,7 +151,7 @@ d3.csv("closer_look/education.csv",function(error, data){
                 //console.log(d);
                 return "4 Year College";
             }else if(i == 3) {
-                console.log(d);
+                //console.log(d);
                 return "High School Dropout";
             }else {
                 return "2 year College";
@@ -161,76 +159,5 @@ d3.csv("closer_look/education.csv",function(error, data){
             //console.log(d.id);
         });
 
-});
-    
+});   
 }
-
-/*// Read in the population data
-d3.csv("population.csv",function(error, data){
-    // Put data in container
-    var pop = data.columns.slice(1).map(function(id) {
-        return {
-            id: id,
-            values: data.map(function(d) {
-                return {date: parseFloat(d.date),
-                        value: parseFloat(d[id])};
-            })
-        };
-    });
-    //console.log(pop);
-    
-    // Create a g element for each population
-    var group = svg.selectAll(".group")
-        .data(pop)
-        .enter().append("g")
-        .attr("class", "group");
-    
-    // Create path
-    var path = group.append("path")
-        .attr("class", "line")
-        .attr("transform", "translate(" + (padding * 2) + ",0)")
-        .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return '#EE2410'; });
-        //.style("fill", function(d) { return z(d.key); });;
-    
-    // Create area
-    group.append("path")
-        .attr('class', 'area')
-        .attr("transform", "translate(" + (padding * 2) + ",0)")
-        .attr('d', function(d) { return area(d.values); })
-        .style('fill', function(d, i) { 
-            if(i == 0){
-                return '#1D8335';
-            } else if(i == 1){
-                return '#EE2410';
-            }
-            
-        });
-    
-    // Append group name to end of path
-    group.append("text")
-        .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-        .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.value) + ")"; })
-        .attr("x", padding * 2)
-        .attr("dy", "0.35em")
-        .style("font", "10px sans-serif")
-        .text(function(d, i) { 
-            if(i == 0){
-                return "Total Population";
-            }else if(i == 2) {
-                return "US Born";
-            }else {
-                return "Foreign Born";
-            }
-        });
-    
-    // Animation
-    var totalLength = path.node().getTotalLength();
-    path
-        .attr("stroke-dasharray", totalLength + " " + totalLength)
-        .attr("stroke-dashoffset", totalLength)
-        .transition()
-        .duration(2000)
-        .ease(d3.easeLinear)
-        .attr("stroke-dashoffset", 0);
-});*/
